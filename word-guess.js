@@ -1,56 +1,129 @@
-// Guess the word one letter at a time.
-// Each player is only allowed to guess
-// wrong three times.
+var firstStart = 1;
+var intro = "Player 1, Enter your secret word.";
+var introAfterWordSave = "Player 2, Guess a letter.";
 
-// Prompt Player 1 to enter a word to guess and store
-// as a variable.
-var word = prompt("Player 1, Enter your secret word.");
-
-// Create another array to store good guesses
 var secret = [];
-// Create a variable to store the number of bad guesses
 var strikes = 0;
 
-// Fill this array with placeholders for guessing
-for (i = 0; i < word.length; i++) {
-  secret.push("_");
+var winPhrase = document.querySelector(".winPhrase")
+var results = document.querySelector(".results")
+var attempsLeft = document.querySelector(".attempsLeft")
+
+var submitButton = document.querySelector("#button-save");
+
+var playerTitle = document.querySelector("#player-text");
+playerTitle.textContent = intro;
+
+var dashesAndLetters = document.querySelector("#dashesAndLetters");
+dashesAndLetters.textContent = '';
+
+var inputField = document.querySelector("#inputField");
+
+var word;
+var letter;
+
+submitButton.addEventListener('click',checkGuess)
+
+inputField.addEventListener('keydown' , function(e){
+  if(e.keyCode === 13){
+    checkGuess();
+  }
+});
+
+function createSecretDashes(word){
+  if(word.length <= 0){
+    results.textContent = "please enter a valid value !";
+  } else{
+    for (i = 0; i < word.length; i++) {
+      secret.push("_");
+    }
+  } 
 }
 
-// Start a loop that continues as long as the person has
-// not guessed wrong three times, or all of the letters have
-// been guessed.
-while (strikes < 3 && secret.indexOf("_") >= 0) {
+function submitword(){
+    word = document.getElementById("inputField").value;
+    firstStart = 0;
+    createSecretDashes(word);
+    dashesAndLetters.textContent = secret.join(' ');
+    inputField.value = '';
+    playerTitle.textContent = introAfterWordSave;
+    inputField.focus();
+    
+}
 
-  // Prompt Player 2 to guess a letter and store as
-  // a variable.
-  var letter = prompt(secret.join(" ") + "\n\n" + "Player 2, Guess a letter.");
+function checkGuess(){
 
-  // If the letter does not exist in the word,
-  // add it to the bad guesses.
-  if (word.indexOf(letter) < 0) {
-    // add a strike
-    strikes++;
-    alert("Bad guess!");
-
-  // If the letter exists in the word, we need to
-  // add it to the good guesses array
-  } else {
-    for (i = 0; i < word.length; i++) {
-      // Each time the guess letter is found, we
-      // add it as a good guess in the same spot
-      if (word[i] === letter) {
-        secret[i] = letter;
+  results.textContent = '';
+  if(firstStart === 1){
+    submitword();
+    return;
+  }
+  if(strikes < 3 && secret.indexOf("_") >= 0) {
+    var letter = document.querySelector("#inputField").value;
+    if(letter.length > 1){
+      inputField.value = "";
+      inputField.focus();
+      results.textContent = "enter just 1 letter of the word !";
+    }
+    else if (word.indexOf(letter) < 0) {
+      strikes++;
+      inputField.value = "";
+      inputField.focus();
+      results.textContent = "Bad guess! you can attempt " + (3 - strikes) +" more !";
+      results.style.color = 'red';
+    } 
+    else {
+      for (i = 0; i < word.length; i++) {
+        if (word[i] === letter) {
+          secret[i] = letter;
+          inputField.value = "";
+          inputField.focus();
+        }
+        dashesAndLetters.textContent = secret.join(" ");
       }
     }
   }
+  if (strikes === 3) {
+    results.textContent = "Sorry, please play again!";
+    results.style.color = 'red';
+    setGameOver();
+  } else if(word === secret.join("")) {
+    results.textContent = "Congratulations on your win!" ;
+    winPhrase.textContent = "The secret word was " + word;
+    results.style.color = 'green';
+    winPhrase.style.color = 'green';
+    setGameOver();
+  }
 }
 
-// Once the player has exited the loop, congratulate
-// them on a win, or tell them they have lost and show
-// the secret word.
-if (strikes === 3) {
-  alert("Sorry, please play again!");
-} else {
-  alert("Congratulations on your win!");
-}
-alert("The secret word was " + word);
+function setGameOver(){
+	inputField.disabled = true;
+	submitButton.disabled = true;
+	resetButton = document.createElement('button');
+	resetButton.textContent = 'Start new game';
+  document.querySelector("#buttons-group").appendChild(resetButton);
+  resetButton.className = "btn btn-secondary";
+	resetButton.addEventListener('click' , resetGame);
+  }
+  
+  function resetGame(){
+    strikes = 0;
+    const resetParas = document.querySelectorAll('.resultParas p');
+  
+    for(let i = 0; i < resetParas.length; i++){
+      resetParas[i].textContent ='';
+    }
+  
+    resetButton.parentNode.removeChild(resetButton);
+  
+    inputField.disabled = false;
+    submitButton.disabled = false;
+    inputField.value = '';
+    inputField.focus();
+    
+    playerTitle.textContent = intro;
+    dashesAndLetters.textContent = '';
+    
+    firstStart = 1;
+    secret = [];
+  }	

@@ -1,9 +1,31 @@
 <!doctype html>
 <html>
   <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <title>JavaScript for Kids</title>
   </head>
   <body>
+    <div class="container">
+      <div class="title" style="text-align: center;">
+        <h2>Password guessing game</h2>
+      </div>
+      <div class="info" style="text-align: center;">
+        <label id="player-text">some text</label><br>
+        <label id="dashesAndLetters">-----</label>
+      </div>
+      <div class="input">
+        <input id="inputField" type="text" class="form-control">
+      </div>
+      <div id="buttons-group" class="buttons form-group" style="text-align: center;margin-top: 30px;">
+        <input id="button-save"  class="btn btn-primary" type="submit">
+      </div>
+      <div class="resultParas">
+          <p class="results" style="text-align: center;margin-top: 10px; font-size: 20px;"></p>
+          <p class="winPhrase" style="text-align: center;margin-top: 10px; font-size: 20px;"></p>
+        </div>
+    </div>
     <script src="word-guess.js"></script>
   </body>
 </html>
